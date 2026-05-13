@@ -1,0 +1,10 @@
+{
+  "build": {
+    "dockerfilePath": "scraper/Dockerfile",
+    "watchPatterns": ["scraper/**"]
+  },
+  "deploy": {
+    "startCommand": "python scraper.py",
+    "restartPolicyType": "always"
+  }
+}
