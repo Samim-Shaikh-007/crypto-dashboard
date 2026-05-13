@@ -1,0 +1,104 @@
+{
+  "title": "Crypto Price Tracker",
+  "uid": "crypto-tracker",
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": { "from": "now-3h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Bitcoin (BTC) Price — USD",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "datasource": "PostgreSQL",
+      "targets": [
+        {
+          "rawSql": "SELECT fetched_at AS time, price_usd AS \"BTC Price\" FROM crypto_prices WHERE coin = 'bitcoin' AND $__timeFilter(fetched_at) ORDER BY fetched_at ASC;",
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "color": { "mode": "fixed", "fixedColor": "orange" }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Ethereum (ETH) Price — USD",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "datasource": "PostgreSQL",
+      "targets": [
+        {
+          "rawSql": "SELECT fetched_at AS time, price_usd AS \"ETH Price\" FROM crypto_prices WHERE coin = 'ethereum' AND $__timeFilter(fetched_at) ORDER BY fetched_at ASC;",
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "color": { "mode": "fixed", "fixedColor": "purple" }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "BNB Price — USD",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "datasource": "PostgreSQL",
+      "targets": [
+        {
+          "rawSql": "SELECT fetched_at AS time, price_usd AS \"BNB Price\" FROM crypto_prices WHERE coin = 'binancecoin' AND $__timeFilter(fetched_at) ORDER BY fetched_at ASC;",
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "color": { "mode": "fixed", "fixedColor": "yellow" }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "24h Change % — All Coins",
+      "type": "bargauge",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "datasource": "PostgreSQL",
+      "targets": [
+        {
+          "rawSql": "SELECT coin, change_24h FROM crypto_prices WHERE fetched_at = (SELECT MAX(fetched_at) FROM crypto_prices) ORDER BY coin;",
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 0 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Latest Prices",
+      "type": "table",
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 6 },
+      "datasource": "PostgreSQL",
+      "targets": [
+        {
+          "rawSql": "SELECT coin, price_usd AS \"Price (USD)\", market_cap AS \"Market Cap\", volume_24h AS \"24h Volume\", change_24h AS \"24h Change %\", fetched_at AS \"Last Updated\" FROM crypto_prices WHERE fetched_at = (SELECT MAX(fetched_at) FROM crypto_prices) ORDER BY market_cap DESC;",
+          "format": "table"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 38
+}
